@@ -10,7 +10,7 @@ const config = {
   storageBucket: "style-shop-db.appspot.com",
   messagingSenderId: "986039959679",
   appId: "1:986039959679:web:b910856c934bc1be837f4a",
-  measurementId: "G-PJMVSQXYE6"
+  measurementId: "G-PJMVSQXYE6",
 };
 
 export const createUserProfileDocument = async (userAuth, additionalData) => {
@@ -29,6 +29,33 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
     }
   }
   return userRef;
+};
+
+export const addCollectionAndDocument = async (collectionKey, objectToAdd) => {
+  const collectionRef = firestore.collection(collectionKey);
+  const batch = firestore.batch();
+  objectToAdd.forEach((obj) => {
+    const newDocRef = collectionRef.doc();
+    batch.set(newDocRef, obj);
+  });
+  return await batch.commit();
+};
+
+export const convertCollectionsSnapshotToMap = (collections) => {
+  const transformedCollections = collections.docs.map((doc) => {
+    const { title, items } = doc.data();
+
+    return {
+      id: doc.id,
+      routeName: encodeURI(title.toLowerCase()),
+      items,
+      title,
+    };
+  });
+  return transformedCollections.reduce((accumulator, collection) => {
+    accumulator[collection.title.toLowerCase()] = collection;
+    return accumulator;
+  }, {});
 };
 
 firebase.initializeApp(config);

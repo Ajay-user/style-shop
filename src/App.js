@@ -13,11 +13,12 @@ import ShopPage from "./page/shop/shop.component";
 import Header from "./component/header/header.component.jsx";
 import SignInAndSignUpPage from "./page/sign-in-and-sign-up/sign-in-and-sign-up.component.jsx";
 
+
 class App extends React.Component {
   unsubscribeFromAuth = null;
 
   componentDidMount() {
-    const { setCurrentUser } = this.props;
+    const { setCurrentUser} = this.props;
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
       if (userAuth) {
         const userRef = createUserProfileDocument(userAuth);
@@ -30,6 +31,7 @@ class App extends React.Component {
       } else {
         setCurrentUser(userAuth);
       }
+      
     });
   }
   componentWillUnmount() {
